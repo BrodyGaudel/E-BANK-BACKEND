@@ -11,6 +11,9 @@ Service de gestion des comptes bancaires : Ce microservice gère les comptes ban
 ## Module : Gestion des opérations
 Service de gestion des opérations : Ce microservice gère les différentes opérations bancaires, telles que les crédits, les débits et les transferts entre comptes.
 
+![Diagramme de classe](https://github.com/BrodyGaudel/E-BANK-BACKEND/assets/57298219/97ebe354-a0f9-4e73-b16c-5e99d9ec519a)
+
+
 ## FRONTEND
 La partie frontend développé en avec ANGULAR est disponible ici : https://github.com/BrodyGaudel/E-BANK-FRONTEND
 
