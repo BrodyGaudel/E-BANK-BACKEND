@@ -1,3 +1,15 @@
+/*
+ * Copyright 2022-2023 the original author or authors.
+ *
+ * This file (service class) contains all the implementation
+ *  of the logic and business rules concerning the bank account management module.
+ *
+ * You may use this file for commercial and/or educational purposes.
+ * You can ask for a collaboration to improve this file.
+ * You can modify it according to your needs.
+ * The author does not promise any guarantees.
+ */
+
 package com.brodygaudel.ebank.services.implementations;
 
 import com.brodygaudel.ebank.dtos.*;
@@ -40,6 +52,12 @@ public class BankAccountServiceImpl implements BankAccountService {
         this.idGenerator = idGenerator;
     }
 
+    /**
+     * create new Current Bank Account
+     * @param form the basic information of a Current Bank
+     * @return Current Bank Account saved
+     * @throws CustomerNotFoundException raises this exception if the customer whose current bank account you want to create does not exist.
+     */
     @Override
     public CurrentAccountDTO saveCurrentBankAccount(@NotNull CurrentAccountCreationForm form) throws CustomerNotFoundException {
         Customer customer = customerRepository.findById(form.customerId())
@@ -56,6 +74,12 @@ public class BankAccountServiceImpl implements BankAccountService {
         return mappers.fromCurrentAccount(savedCurrentAccount);
     }
 
+    /**
+     * create new Saving Bank Account
+     * @param form the basic information of a Current Bank
+     * @return Saving Bank Account saved
+     * @throws CustomerNotFoundException raises this exception if the customer whose current bank account you want to create does not exist.
+     */
     @Override
     public SavingAccountDTO saveSavingBankAccount(@NotNull SavingAccountCreationForm form) throws CustomerNotFoundException {
         Customer customer = customerRepository.findById(form.customerId())
@@ -72,6 +96,12 @@ public class BankAccountServiceImpl implements BankAccountService {
         return mappers.fromSavingAccount(savedSavingAccount);
     }
 
+    /**
+     * get Bank Account by id
+     * @param id the id of Bank Account you want to get
+     * @return Bank Account found
+     * @throws BankAccountNotFoundException raises this exception if the bank account you want to get does not exist.
+     */
     @Override
     public BankAccountDTO getBankAccountById(String id) throws BankAccountNotFoundException {
         BankAccount bankAccount = bankAccountRepository.findById(id)
@@ -84,6 +114,12 @@ public class BankAccountServiceImpl implements BankAccountService {
         return mappers.fromCurrentAccount(currentAccount);
     }
 
+    /**
+     * get all customer's bank account
+     * @param id the id of customer
+     * @return the list of all customer's bank account
+     * @throws BankAccountNotFoundException raises this exception if the bank account you want to get does not exist.
+     */
     @Override
     public List<BankAccountDTO> getBankAccountByCustomerId(Long id) throws BankAccountNotFoundException {
         List<BankAccount> bankAccounts = bankAccountRepository.findByCustomerId(id);
@@ -102,6 +138,10 @@ public class BankAccountServiceImpl implements BankAccountService {
                 .toList();
     }
 
+    /**
+     * get all Bank Accounts
+     * @return the list of all Bank Accounts
+     */
     @Override
     public List<BankAccountDTO> getAllBankAccounts() {
         List<BankAccount> bankAccounts = bankAccountRepository.findAll();
@@ -117,6 +157,13 @@ public class BankAccountServiceImpl implements BankAccountService {
                 .toList();
     }
 
+    /**
+     * update bank account status (activate or suspend)
+     * @param id the id of Bank Account you want to update status
+     * @param status new status
+     * @return Bank Account updated
+     * @throws BankAccountNotFoundException raises this exceptions if bank account not found
+     */
     @Override
     public BankAccountDTO updateBankAccountStatus(String id, @NotNull UpdateBankAccountStatus status) throws BankAccountNotFoundException {
         BankAccount bankAccount = bankAccountRepository.findById(id)

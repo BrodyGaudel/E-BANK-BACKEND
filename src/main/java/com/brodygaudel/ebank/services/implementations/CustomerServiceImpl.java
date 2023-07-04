@@ -1,3 +1,17 @@
+/*
+ * Copyright 2022-2023 the original author or authors.
+ *
+ * This file (service class) contains all the implementation
+ *  of the logic and business rules concerning the customer management module
+ *  (creation, modification, deletion, consultation, etc.).
+ *
+ * You may use this file for commercial and/or educational purposes.
+ * You can ask for a collaboration to improve this file.
+ * You can modify it according to your needs.
+ * The author does not promise any guarantees.
+ */
+
+
 package com.brodygaudel.ebank.services.implementations;
 
 import com.brodygaudel.ebank.dtos.CustomerDTO;
@@ -25,18 +39,33 @@ public class CustomerServiceImpl implements CustomerService {
         this.mappers = mappers;
     }
 
+    /**
+     * get all customers
+     * @return list of all customers
+     */
     @Override
     public List<CustomerDTO> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
         return mappers.fromListOfCustomers(customers);
     }
 
+    /**
+     * search for one or more customers by firstname and/or name
+     * @param keyword represent name or firstname of users you want to get
+     * @return list of customers found with name or firstname like keyword
+     */
     @Override
     public List<CustomerDTO> searchCustomers(String keyword) {
         List<Customer> customers = customerRepository.search("%"+keyword+"%");
         return mappers.fromListOfCustomers(customers);
     }
 
+    /**
+     * get a customer by his id.
+     * @param id the id of the user you want to get
+     * @return Customer found
+     * @throws CustomerNotFoundException raises this exception if no client matches this id
+     */
     @Override
     public CustomerDTO getCustomerById(Long id) throws CustomerNotFoundException {
         Customer customer = customerRepository.findById(id)
@@ -45,6 +74,12 @@ public class CustomerServiceImpl implements CustomerService {
         return mappers.fromCustomer(customer);
     }
 
+    /**
+     * create a new customer
+     * @param customerDTO the customer to register
+     * @return customer saved
+     * @throws CinAlreadyExistsException raises this exception if there is already a customer with the same cin
+     */
     @Override
     public CustomerDTO saveCustomer(@NotNull CustomerDTO customerDTO) throws CinAlreadyExistsException {
         Boolean cinExists = customerRepository.checkIfCinExists(customerDTO.cin());
@@ -57,6 +92,14 @@ public class CustomerServiceImpl implements CustomerService {
         return mappers.fromCustomer(savedCustomer);
     }
 
+    /**
+     * modify all customer's information such as name, firstname, etc.
+     * @param id the id of customer you want to update
+     * @param customerDTO new information for customer
+     * @return Customer updated
+     * @throws CustomerNotFoundException raises this exception if no customer matches this id
+     * @throws CinAlreadyExistsException raises this exception if there is already a customer with the same cin
+     */
     @Override
     public CustomerDTO updateCustomer(Long id, @NotNull CustomerDTO customerDTO) throws CustomerNotFoundException, CinAlreadyExistsException {
         Customer customer = customerRepository.findById(id)
@@ -80,6 +123,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
+    /**
+     * delete a customer by his id
+     * @param id the id of customer you want to delete
+     */
     @Override
     public void deleteCustomerById(Long id) {
         customerRepository.deleteById(id);

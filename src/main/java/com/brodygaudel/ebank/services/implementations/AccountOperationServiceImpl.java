@@ -1,3 +1,16 @@
+/*
+ * Copyright 2022-2023 the original author or authors.
+ *
+ * This file (service class) contains all the implementation of
+ *  the logic and business rules concerning
+ * the banking operations management module (credit, debit, transfers).
+ *
+ * You may use this file for commercial and/or educational purposes.
+ * You can ask for a collaboration to improve this file.
+ * You can modify it according to your needs.
+ * The author does not promise any guarantees.
+ */
+
 package com.brodygaudel.ebank.services.implementations;
 
 import com.brodygaudel.ebank.dtos.*;
@@ -38,6 +51,14 @@ public class AccountOperationServiceImpl implements AccountOperationService {
         this.mappers = mappers;
     }
 
+    /**
+     * debit a bank account
+     * @param debitDTO basic information to debit a bank account
+     * @return basic information for a bank account debited
+     * @throws BankAccountNotFoundException raises this exception if the bank account you want to debit does not exist.
+     * @throws BalanceNotSufficientException raises this exception if balance not sufficient
+     * @throws BankAccountNotActivatedException raises this exception if bank account's status is not activated
+     */
     @Override
     public DebitDTO debit(@NotNull DebitDTO debitDTO) throws BankAccountNotFoundException, BalanceNotSufficientException, BankAccountNotActivatedException {
         BankAccount bankAccount = bankAccountRepository.findById(debitDTO.accountId())
@@ -63,6 +84,13 @@ public class AccountOperationServiceImpl implements AccountOperationService {
         return new DebitDTO(operation.getBankAccount().getId(), operation.getAmount(), operation.getDescription());
     }
 
+    /**
+     * credit a bank account
+     * @param creditDTO basic information to credit a bank account
+     * @return basic information of bank account credited
+     * @throws BankAccountNotFoundException raises this exception if the bank account you want to credit does not exist.
+     * @throws BankAccountNotActivatedException raises this exception if bank account status is not activated
+     */
     @Override
     public CreditDTO credit(@NotNull CreditDTO creditDTO) throws BankAccountNotFoundException, BankAccountNotActivatedException {
         BankAccount bankAccount = bankAccountRepository.findById(creditDTO.accountId())
@@ -82,6 +110,14 @@ public class AccountOperationServiceImpl implements AccountOperationService {
         return new CreditDTO(bankAccount.getId(), accountOperation.getAmount(), accountOperation.getDescription());
     }
 
+    /**
+     * make a transfer from a bank account to another bank account
+     * @param transferDTO basic information to make a transfer
+     * @return basic information of transfer done
+     * @throws BankAccountNotFoundException raises this exception if the bank account(s) you want to transfer does not exist.
+     * @throws BalanceNotSufficientException raises this exception if balance not sufficient to make a transfer
+     * @throws BankAccountNotActivatedException raises this exception if bank account status is not activated
+     */
     @Override
     public TransferDTO transfer(@NotNull TransferDTO transferDTO) throws BankAccountNotFoundException, BalanceNotSufficientException, BankAccountNotActivatedException {
         debit(new DebitDTO(transferDTO.accountIdSource(), transferDTO.amount(), "Transfer to : "+transferDTO.accountIdDestination()));
@@ -90,6 +126,11 @@ public class AccountOperationServiceImpl implements AccountOperationService {
         return transferDTO;
     }
 
+    /**
+     * get all operations by account id
+     * @param accountId id of bank account that you want to retrieve operations
+     * @return a list of AccountOperation where accountId equal id
+     */
     @Override
     public List<AccountOperationDTO> getAllOperationsByAccountId(String accountId) {
         List<AccountOperation> accountOperations = accountOperationRepository.findByBankAccountId(accountId);
@@ -99,6 +140,12 @@ public class AccountOperationServiceImpl implements AccountOperationService {
                 .toList();
     }
 
+    /**
+     * get AccountOperation by id
+     * @param id the id of AccountOperation you want to get
+     * @return AccountOperation found
+     * @throws AccountOperationNotFoundException raises this exception if AccountOperation not found
+     */
     @Override
     public AccountOperationDTO getOperationById(Long id) throws AccountOperationNotFoundException {
         AccountOperation operation = accountOperationRepository.findById(id)
@@ -107,6 +154,14 @@ public class AccountOperationServiceImpl implements AccountOperationService {
         return mappers.fromAccountOperation(operation);
     }
 
+    /**
+     * get the transaction history (credit, debit) of a bank account.
+     * @param accountId the id of the bank account whose history you want to read
+     * @param page the number of a page you want to get
+     * @param size the size of a page
+     * @return bank account history
+     * @throws BankAccountNotFoundException raises this exception if the bank account whose history you want to consult does not exist.
+     */
     @Override
     public AccountHistoryDTO getAccountHistory(String accountId, int page, int size) throws BankAccountNotFoundException {
         BankAccount bankAccount = bankAccountRepository.findById(accountId).orElse(null);
@@ -128,6 +183,11 @@ public class AccountOperationServiceImpl implements AccountOperationService {
         );
     }
 
+    /**
+     * check if bank account is not activated
+     * @param bankAccount bank account
+     * @throws BankAccountNotActivatedException raises this exceptions if bank account status is not activated
+     */
     private void checkIfBankAccountIsReady(@NotNull BankAccount bankAccount) throws BankAccountNotActivatedException {
         if(bankAccount.getStatus().equals(AccountStatus.SUSPENDED)){
             throw new BankAccountNotActivatedException("Bank Account Suspended");

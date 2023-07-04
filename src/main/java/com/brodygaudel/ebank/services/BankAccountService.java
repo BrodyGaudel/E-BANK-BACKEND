@@ -1,7 +1,17 @@
+/*
+ * Copyright 2022-2023 the original author or authors.
+ *
+ * This file (service interface) contains all the bank account management module methods..
+ *
+ * You may use this file for commercial and/or educational purposes.
+ * You can ask for a collaboration to improve this file.
+ * You can modify it according to your needs.
+ * The author does not promise any guarantees.
+ */
+
 package com.brodygaudel.ebank.services;
 
 import com.brodygaudel.ebank.dtos.*;
-import com.brodygaudel.ebank.entities.BankAccount;
 import com.brodygaudel.ebank.exceptions.BankAccountNotFoundException;
 import com.brodygaudel.ebank.exceptions.CustomerNotFoundException;
 

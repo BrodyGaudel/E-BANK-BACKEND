@@ -1,9 +1,12 @@
+
+
 package com.brodygaudel.ebank.dtos;
 
 import com.brodygaudel.ebank.enums.AccountStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 public class SavingAccountDTO extends BankAccountDTO {
     private String id;
@@ -85,5 +88,19 @@ public class SavingAccountDTO extends BankAccountDTO {
                 ", customerDTO=" + customerDTO +
                 ", interestRate=" + interestRate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SavingAccountDTO that = (SavingAccountDTO) o;
+        return Double.compare(that.interestRate, interestRate) == 0 && Objects.equals(id, that.id) && Objects.equals(balance, that.balance) && Objects.equals(createdAt, that.createdAt) && status == that.status && Objects.equals(customerDTO, that.customerDTO);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, balance, createdAt, status, customerDTO, interestRate);
     }
 }

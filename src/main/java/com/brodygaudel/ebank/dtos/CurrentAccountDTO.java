@@ -1,9 +1,21 @@
+/*
+ * Copyright 2022-2023 the original author or authors.
+ *
+ * this file contains the dto Current Bank Account
+ *
+ * You may use this file for commercial and/or educational purposes.
+ * You can ask for a collaboration to improve this file.
+ * You can modify it according to your needs.
+ * The author does not promise any guarantees.
+ */
+
 package com.brodygaudel.ebank.dtos;
 
 import com.brodygaudel.ebank.enums.AccountStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 public class CurrentAccountDTO extends BankAccountDTO{
     private String id;
@@ -85,5 +97,19 @@ public class CurrentAccountDTO extends BankAccountDTO{
                 ", customerDTO=" + customerDTO +
                 ", overDraft=" + overDraft +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        CurrentAccountDTO that = (CurrentAccountDTO) o;
+        return Double.compare(that.overDraft, overDraft) == 0 && Objects.equals(id, that.id) && Objects.equals(balance, that.balance) && Objects.equals(createdAt, that.createdAt) && status == that.status && Objects.equals(customerDTO, that.customerDTO);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, balance, createdAt, status, customerDTO, overDraft);
     }
 }
